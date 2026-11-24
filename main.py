@@ -18,11 +18,18 @@ MAX_CHARS = 200
 
 
 def validate(text: str) -> None:
-    """Assert the gate: 1-200 chars, a single non-blank line."""
+    """Assert the gate: 1-200 chars, a single non-blank line.
+
+    Strict second pass: exactly one line (no embedded newline or carriage
+    return), no leading or trailing whitespace, and the tip must open
+    with the required "Tip:" label so it reads as a loading-screen tip.
+    """
     assert isinstance(text, str)
     assert text.strip(), "entry must not be empty or only whitespace"
-    assert "\n" not in text.rstrip("\n"), "entry must be a single line"
+    assert text == text.strip(), "entry must not have leading/trailing whitespace"
+    assert text.count("\n") == 0, "entry must be exactly one line"
     assert "\r" not in text, "entry must be a single line"
+    assert text.startswith("Tip:"), 'entry must start with "Tip:"'
     assert 1 <= len(text) <= MAX_CHARS, (
         f"entry must be 1-{MAX_CHARS} characters, got {len(text)}"
     )
